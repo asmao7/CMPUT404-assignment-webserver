@@ -1,5 +1,6 @@
 #  coding: utf-8 
 import socketserver
+import os
 
 # Copyright 2013 Abram Hindle, Eddie Antonio Santos
 # 
@@ -26,13 +27,68 @@ import socketserver
 
 # try: curl -v -X GET http://127.0.0.1:8080/
 
+# current os path
 
 class MyWebServer(socketserver.BaseRequestHandler):
-    
+    """
+    - overwrite the inherited handle method
+    - process incoming calls
+    - 
+    """
     def handle(self):
-        self.data = self.request.recv(1024).strip()
-        print ("Got a request of: %s\n" % self.data)
-        self.request.sendall(bytearray("OK",'utf-8'))
+        self.data = self.request.recv(1024).strip().decode('utf-8')
+        #print ("Got a request of: %s\n" % self.data)
+       # self.request.sendall(bytearray("OK",'utf-8'))         
+        
+        method = self.data.split()[0]
+        requested_path = ""
+
+        # complete path
+        path = os.getcwd() + "/www/" + requested_path
+        #complete_path = os.path.join(path, path.strip('/'))   #cwd + path + "www/"
+
+        # if the requested method is GET, check if requested path exists?
+        # is .css or .html? or empty?
+        # redirect to index.html o/w
+        if(method == "GET"):
+            requested_path = self.data.split()[1] #data_list[1]
+            path = os.getcwd() + "/www/" + requested_path
+            if("index.html" not in requested_path and ".css" not in requested_path):
+                if(requested_path.endswith("/")):
+                    path+= "index.html"
+                    f = open(path, "r")
+                    data = f.read()
+                    self.request.sendall(bytearray('HTTP/1.1 200 OK\r\n'+"Content-Type:" +'text/html' +"\r\n"  +"\r\n\r\n"+data,'utf-8'))
+                    return
+                else:
+                    # 301 error
+                    print("301 error!")
+                    #  return
+
+            if("css" in requested_path):
+                path = os.getcwd() + "/www/" + requested_path
+                #print("THE PATH I'M TRYING TO OPEN IS: ", path)
+                f = open(path, "r")
+                data = f.read()
+                type = "css"
+                self.request.sendall(bytearray('HTTP/1.1 200 OK\r\n'+"Content-Type:" +"text/css" +"\r\n"  +"\r\n\r\n"+data,'utf-8'))
+            elif('html' in requested_path):
+                path = "./www" + requested_path
+                #print("THE PATH I'M TRYING TO OPEN IS: ", path)
+                path =  path.strip("/")
+                f = open(path, "r")
+                data = f.read()
+                self.request.sendall(bytearray('HTTP/1.1 200 OK\r\n'+"Content-Type:" +'text/html' +"\r\n"  +"\r\n\r\n"+data,'utf-8'))            
+            else:
+                # 404 error if it gets to this point, not in directory!
+                self.request.sendall(bytearray('HTTP/1.1 404 Not Found\r\n'
+                'Content-Type: text/html\r\n\r\n' + '<body>' '<h1>Error response</h1>' '<p>Error code 404.</p>' '<p>Message: File not found.</p>' '</body> ', 'utf-8'))
+        else:
+            # 405 ERROR!    """"this if for all the other methods we don't care about now""""
+            self.request.sendall(bytearray('HTTP/1.1 405 Not Found\r\n'
+            'Content-Type: text/html\r\n\r\n' + '<body>' '<h1>Error response</h1>' '<p>Error code 405.</p>' '<p>Message: Method Not Allowed..</p>' '</body> ', 'utf-8'))
+            #return
+
 
 if __name__ == "__main__":
     HOST, PORT = "localhost", 8080
