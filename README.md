@@ -18,9 +18,20 @@ server.py contains contributions from:
 * Eddie Antonio Santos
 * Jackson Z Chang
 * Mandy Meindersma 
+* Asma Omar ~ student submitting
 
 But the server.py example is derived from the python documentation
 examples thus some of the code is Copyright © 2001-2013 Python
 Software Foundation; All Rights Reserved under the PSF license (GPL
 compatible) http://docs.python.org/2/library/socketserver.html
 
+=============================
+Student submitting: Asma Omar
+
+The following links to sources used to complete this assignment:
+# https://www.tutorialspoint.com/http/http_requests.htm
+# https://www.tutorialspoint.com/http/http_status_codes.htm
+# https://www.sistrix.com/ask-sistrix/onpage-optimisation/http-status-code/4xx-client-error-404-error-page/how-do-i-return-the-correct-404-error-page
+#
+
+=============================
