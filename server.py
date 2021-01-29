@@ -3,7 +3,8 @@ import socketserver
 import os
 
 # Copyright 2013 Abram Hindle, Eddie Antonio Santos
-# 
+# Copyright Student: Asma Omar
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -58,11 +59,13 @@ class MyWebServer(socketserver.BaseRequestHandler):
                     path+= "index.html"
                     f = open(path, "r")
                     data = f.read()
-                    self.request.sendall(bytearray('HTTP/1.1 200 OK\r\n'+"Content-Type:" +'text/html' +"\r\n"  +"\r\n\r\n"+data,'utf-8'))
+                    self.request.sendall(bytearray('HTTP/1.1 200 OK\r\n'+"Content-Type:" +'text/html' +"\r\n" +"\r\n\r\n"+data,'utf-8'))
                     return
                 else:
-                    # 301 error
-                    print("301 error!")
+                    # 301 redirect
+                    print("301!")
+                    #self.request.sendall(bytearray('HTTP/1.1 301 Moved Permanently\r\n' 'Location :' + requested_path + '/\r\n' +"Content-Type:" +'text/html' +"\r\n"  +"\r\n\r\n",'utf-8'))
+                    #return
                     #  return
 
             if("css" in requested_path):
@@ -71,18 +74,18 @@ class MyWebServer(socketserver.BaseRequestHandler):
                 f = open(path, "r")
                 data = f.read()
                 type = "css"
-                self.request.sendall(bytearray('HTTP/1.1 200 OK\r\n'+"Content-Type:" +"text/css" +"\r\n"  +"\r\n\r\n"+data,'utf-8'))
+                self.request.sendall(bytearray('HTTP/1.1 200 OK\r\n'+"Content-Type:" +"text/css" +"\r\n" +"\r\n\r\n"+data,'utf-8'))
             elif('html' in requested_path):
                 path = "./www" + requested_path
                 #print("THE PATH I'M TRYING TO OPEN IS: ", path)
                 path =  path.strip("/")
                 f = open(path, "r")
                 data = f.read()
-                self.request.sendall(bytearray('HTTP/1.1 200 OK\r\n'+"Content-Type:" +'text/html' +"\r\n"  +"\r\n\r\n"+data,'utf-8'))            
+                self.request.sendall(bytearray('HTTP/1.1 200 OK\r\n'+"Content-Type:" +'text/html' +"\r\n"+"\r\n\r\n"+data,'utf-8'))            
             else:
                 # 404 error if it gets to this point, not in directory!
                 self.request.sendall(bytearray('HTTP/1.1 404 Not Found\r\n'
-                'Content-Type: text/html\r\n\r\n' + '<body>' '<h1>Error response</h1>' '<p>Error code 404.</p>' '<p>Message: File not found.</p>' '</body> ', 'utf-8'))
+                'Content-Type: text/html\r\n\r\n' + '<body>' '<h1>Error response</h1>' '<p>Error code 404.</p>' '<p>Message: File Not Found.</p>' '</body> ', 'utf-8'))
         else:
             # 405 ERROR!    """"this if for all the other methods we don't care about now""""
             self.request.sendall(bytearray('HTTP/1.1 405 Not Found\r\n'
